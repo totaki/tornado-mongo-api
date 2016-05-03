@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+  server-tmoa:
+    build:
+      context: ../
+    container_name: server-tmoa
+    env_file:
+      - ./test.env
+    command: python -m main
+    volumes:
+      - ../:/app
+    depends_on:
+      - db-tmoa
+  test-tmoa:
+    build:
+      context: ../
+    container_name: tmoa-test
+    env_file:
+      - ./test.env
+    command: python -m tornado.test.runtests test.main
+    volumes:
+      - ../:/app
+    depends_on:
+      - server-tmoa
+  db-tmoa:
+    image: mongo:3.2
+    container_name: tmoa-db
