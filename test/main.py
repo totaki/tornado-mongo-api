@@ -26,6 +26,7 @@ class MyTestCase(testing.AsyncTestCase):
 
     @testing.gen_test
     def test_http_fetch(self):
+        
         # Insert documents
         docs = {'rows': [
             {'field_1': 'record 1', 'field_2': 1},
@@ -42,6 +43,7 @@ class MyTestCase(testing.AsyncTestCase):
         self.assertEqual(response.code, 200)
         insert_docs = json.loads(response.body.decode('utf-8'))
         self.assertEqual(insert_docs['length'], 3)
+        
         # Get docs
         for doc in insert_docs['rows']:
             response = yield client.fetch(
@@ -58,6 +60,34 @@ class MyTestCase(testing.AsyncTestCase):
         get_doc = json.loads(response.body.decode('utf-8'))
         self.assertEqual(get_doc['length'], 2)
 
+        response = yield client.fetch(
+            '{}?field_2=4'.format(path), method='GET'
+        )
+        self.assertEqual(response.code, 200)
+        get_doc = json.loads(response.body.decode('utf-8'))
+        self.assertEqual(get_doc['length'], 0)
+        
+        # Update document
+        new_doc = {'rows': [
+            {'field_1': 'record updated', 'field_2': 1},
+        ]}
+        new_doc_json = json.dumps(new_doc)
+        response = yield client.fetch(
+            '{}?field_2=1'.format(path), method='PUT', body=new_doc_json)
+        self.assertEqual(response.code, 200)
+        new_doc_response = json.loads(response.body.decode('utf-8'))
+        self.assertEqual(new_doc_response['length'], 1)
+        response = yield client.fetch(
+            '{}?_id={}'.format(
+                path, new_doc_response['rows'][0]
+            ),
+            method='GET'
+        )
+        self.assertEqual(response.code, 200)
+        get_doc = json.loads(response.body.decode('utf-8'))
+        self.assertEqual(get_doc['length'], 1)
+        self.assertEqual(get_doc['rows'][0]['field_1'], 'record updated')
+
         # Delete documents
         for doc in insert_docs['rows']:
             response = yield client.fetch(
@@ -66,6 +96,7 @@ class MyTestCase(testing.AsyncTestCase):
             self.assertEqual(response.code, 200)
             delete_doc = json.loads(response.body.decode('utf-8'))
             self.assertEqual(delete_doc['length'], 1)
+        
         # Insert invalid documents
         invalid_docs = {'rows': [
             {'field_1': 'record 4'}

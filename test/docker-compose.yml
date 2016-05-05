@@ -6,23 +6,34 @@ services:
       context: ../
     container_name: server-tmoa
     env_file:
-      - ./test.env
+      - ./auto-test.env
     command: python -m main
     volumes:
       - ../:/app
     depends_on:
       - db-tmoa
-  test-tmoa:
+  test-auto-tmoa:
     build:
       context: ../
-    container_name: tmoa-test
+    container_name: tmoa-auto-test
     env_file:
-      - ./test.env
+      - ./auto-test.env
     command: python -m tornado.test.runtests test.main
     volumes:
       - ../:/app
     depends_on:
       - server-tmoa
+  test-manual-tmoa:
+    build:
+      context: ../
+    container_name: tmoa-manual-test
+    env_file:
+      - ./manual-test.env
+    command: bash
+    volumes:
+      - ../:/app
+    depends_on:
+      - db-tmoa
   db-tmoa:
     image: mongo:3.2
     container_name: tmoa-db

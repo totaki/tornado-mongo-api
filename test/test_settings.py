@@ -7,5 +7,8 @@ test_collection = {
     },
     FIND: {
         'field_2': int 
+    },
+    UPDATE : {
+        'field_1': lambda key, value: {'$set': {key: value}}
     }
 }

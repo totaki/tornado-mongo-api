@@ -1,6 +1,6 @@
 FIND = 'find'
 INSERT = 'insert'
-
+UPDATE = 'update'
 
 def validate_insert(func):
     def wrapper(default=None, blank=True):
