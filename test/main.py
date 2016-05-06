@@ -31,7 +31,8 @@ class MyTestCase(testing.AsyncTestCase):
         docs = {'rows': [
             {'field_1': 'record 1', 'field_2': 1},
             {'field_1': 'record 2', 'field_2': 2},
-            {'field_1': 'record 3', 'field_2': 2}
+            {'field_1': 'record 3', 'field_2': 2},
+            {'field_2': 100}
         ]}
         docs_json = json.dumps(docs)
         path = 'http://{}:{}/test_collection'.format(
@@ -42,7 +43,7 @@ class MyTestCase(testing.AsyncTestCase):
         response = yield client.fetch(path, method='POST', body=docs_json)
         self.assertEqual(response.code, 200)
         insert_docs = json.loads(response.body.decode('utf-8'))
-        self.assertEqual(insert_docs['length'], 3)
+        self.assertEqual(insert_docs['length'], 4)
         
         # Get docs
         for doc in insert_docs['rows']:

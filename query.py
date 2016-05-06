@@ -7,7 +7,7 @@ def validate_insert(func):
         def wrapped(key, value):
             _ = value
 
-            if not value and (not default or not blank):
+            if not value and (not default and not blank):
                 error = 'Value {} must be present'.format(key)
                 raise ValueError(error)
 

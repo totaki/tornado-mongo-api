@@ -3,7 +3,7 @@ from query import *
 test_collection = {
     INSERT: {
         'field_1': STR(),
-        'field_2': INT()
+        'field_2': INT(blank=False)
     },
     FIND: {
         'field_2': int 
