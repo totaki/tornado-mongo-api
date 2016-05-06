@@ -68,9 +68,23 @@ class MyTestCase(testing.AsyncTestCase):
         get_doc = json.loads(response.body.decode('utf-8'))
         self.assertEqual(get_doc['length'], 0)
         
+        response = yield client.fetch(
+            '{}?field_1=record'.format(path), method='GET'
+        )
+        self.assertEqual(response.code, 200)
+        get_doc = json.loads(response.body.decode('utf-8'))
+        self.assertEqual(get_doc['length'], 3)
+        
+        response = yield client.fetch(
+            '{}?field_1=record%201'.format(path), method='GET'
+        )
+        self.assertEqual(response.code, 200)
+        get_doc = json.loads(response.body.decode('utf-8'))
+        self.assertEqual(get_doc['length'], 3)
+
         # Update document
         new_doc = {'rows': [
-            {'field_1': 'record updated', 'field_2': 1},
+            {'field_1': 'record updated', 'field_2': '1'},
         ]}
         new_doc_json = json.dumps(new_doc)
         response = yield client.fetch(

@@ -100,7 +100,7 @@ class CollectionHandler(BaseHandler):
             for key, value in coll.items():
                 val = self.get_query_argument(key, None)
                 if val:
-                    query[key] = value(val)
+                    query.update(value(key, val))
             cursor = self._db[collection].find(query)
             while (yield cursor.fetch_next):
                 _ = cursor.next_object()
@@ -136,7 +136,7 @@ class CollectionHandler(BaseHandler):
                 for key, value in coll.items():
                     val = self.get_query_argument(key, None)
                     if val:
-                        query[key] = value(val)
+                        query.update(value(key, val))
                 _ = yield self._db[collection].find_one(query)
             
             if len(_) > 0:

@@ -2,6 +2,7 @@ FIND = 'find'
 INSERT = 'insert'
 UPDATE = 'update'
 
+
 def validate_insert(func):
     def wrapper(default=None, blank=True):
         def wrapped(key, value):
@@ -30,3 +31,11 @@ def STR(value):
 @validate_insert
 def INT(value):
     return int(value)
+
+
+def find_cap(key, value):
+    return {key: value}
+
+
+def find_text(key, value):
+    return {'$text': {'$search': str(value)}}
